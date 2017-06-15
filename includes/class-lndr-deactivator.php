@@ -31,6 +31,8 @@ class Lndr_Deactivator {
 	 */
 	public static function deactivate() {
     flush_rewrite_rules();
+    $timestamp = wp_next_scheduled( 'lndr_cron' );
+    wp_unschedule_event( $timestamp, 'lndr_cron' );
 	}
 
 }

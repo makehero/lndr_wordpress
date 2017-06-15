@@ -2,6 +2,9 @@
 
 const LNDR_BASE = 'http://alpha.makehero.co/';
 
+/**
+ * Fetch a Lndr page and render it as a post template
+ */
 function import_page() {
   global $post;
   // Get current post id

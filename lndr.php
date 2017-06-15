@@ -47,7 +47,7 @@ function lndr_custom_post_type() {
       ],
       'public'      => true,
       'has_archive' => false,
-      'rewrite'     => ['slug' => 'lndr'],
+      'rewrite'     => ['slug' => '/'],
     ]
   );
 }
