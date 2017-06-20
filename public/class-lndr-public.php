@@ -60,14 +60,6 @@ class Lndr_Public {
 	}
 
   /**
-   * rewrite our API endpoint routes to standardize them
-   */
-  public function rewrite_api_route() {
-    // Matching anything service/ to the rest route
-    add_rewrite_rule('^service/(.*)?', 'index.php?rest_route=service/$matches[1]', 'top');
-  }
-
-  /**
    * Facilitating cron run
    */
   public function lndr_cron_run() {

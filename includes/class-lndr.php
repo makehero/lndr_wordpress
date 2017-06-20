@@ -164,7 +164,7 @@ class Lndr {
 		$plugin_public = new Lndr_Public( $this->get_plugin_name(), $this->get_version());
     $this->loader->add_filter('single_template', $plugin_public, 'lndr_page_template');
     $this->loader->add_action('rest_api_init', $plugin_public, 'service_routes');
-    $this->loader->add_action('init', $plugin_public, 'rewrite_api_route');
+    // $this->loader->add_action('init', $plugin_public, 'rewrite_api_route');
     $this->loader->add_action('rest_api_init', $plugin_public, 'add_cors_header');
     $this->loader->add_action('lndr_cron', $plugin_public, 'sync_posts');
 	}

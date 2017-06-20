@@ -32,9 +32,19 @@ Copyright 2017 Incc.io
 function activate_lndr() {
   require_once plugin_dir_path( __FILE__ ) . 'includes/class-lndr-activator.php';
   $activator = new Lndr_Activator();
+  rewrite_api_route();
   $activator->activate();
   lndr_custom_post_type();
 }
+
+/**
+ * rewrite our API endpoint routes to standardize them
+ */
+function rewrite_api_route() {
+  // Matching anything service/ to the rest route
+  add_rewrite_rule('^service/(.*)?', 'index.php?rest_route=service/$matches[1]', 'top');
+}
+
 /**
  * Registering a new post type for Lndr pages
  */
@@ -51,6 +61,8 @@ function lndr_custom_post_type() {
     ]
   );
 }
+
+add_action('init', 'rewrite_api_route');
 add_action('init', 'lndr_custom_post_type');
 
 /**
