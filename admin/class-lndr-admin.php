@@ -97,7 +97,6 @@ class Lndr_Admin {
       'body' => ['token' => $input['api_token']]
     ];
     $response = wp_remote_get(LNDR_API_VALIDATE_TOKEN, $options);
-    d($response);
     if (wp_remote_retrieve_response_code($response) != '200') {
       $message = __('You have entered an invalid API token, please copy and paste the API token from your profile in Lndr', 'lndr');
       add_settings_error(
