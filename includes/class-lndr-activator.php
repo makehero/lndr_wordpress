@@ -30,6 +30,6 @@ class Lndr_Activator {
 	 */
 	public function activate() {
     flush_rewrite_rules();
-    wp_schedule_event(time(), 'hourly', 'lndr_cron');
+    wp_schedule_event(time(), 'two_minutes', 'lndr_cron');
 	}
 }

@@ -34,7 +34,18 @@ function activate_lndr() {
   $activator = new Lndr_Activator();
   rewrite_api_route();
   $activator->activate();
-  lndr_custom_post_type();
+  // lndr_custom_post_type();
+}
+
+add_filter( 'cron_schedules', 'lndr_custom_cron_schedule' );
+
+function lndr_custom_cron_schedule( $schedules ) {
+  $schedules['two_minutes'] = array(
+    'interval' => 120,
+    'display'  => esc_html__( 'Every 2 minutes' ),
+  );
+
+  return $schedules;
 }
 
 /**
@@ -48,22 +59,22 @@ function rewrite_api_route() {
 /**
  * Registering a new post type for Lndr pages
  */
-function lndr_custom_post_type() {
-  register_post_type('lndr_page',
-    [
-      'labels'      => [
-        'name'          => __('Lndr pages'),
-        'singular_name' => __('Lndr page'),
-      ],
-      'public'      => true,
-      'has_archive' => false,
-      'rewrite'     => ['slug' => '/'],
-    ]
-  );
-}
+//function lndr_custom_post_type() {
+//  register_post_type('lndr_page',
+//    [
+//      'labels'      => [
+//        'name'          => __('Lndr pages'),
+//        'singular_name' => __('Lndr page'),
+//      ],
+//      'public'      => true,
+//      'has_archive' => false,
+//      'rewrite'     => ['slug' => '/'],
+//    ]
+//  );
+//}
 
 add_action('init', 'rewrite_api_route');
-add_action('init', 'lndr_custom_post_type');
+// add_action('init', 'lndr_custom_post_type');
 
 /**
  * The code that runs during plugin deactivation.

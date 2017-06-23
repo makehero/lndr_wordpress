@@ -64,7 +64,7 @@ class Lndr_Public {
    */
   public function lndr_cron_run() {
     if (!wp_next_scheduled('lndr_cron')) {
-      wp_schedule_event(time(), 'hourly', 'lndr_cron');
+      wp_schedule_event(time(), 'two_minutes', 'lndr_cron');
     }
   }
 
@@ -166,10 +166,10 @@ class Lndr_Public {
       return json_encode($response);
     }
 
-    // Create a new unpublished lndr_page
+    // Create a new unpublished page
     $new_post = [
-      'post_title' => $path,
-      'post_type' => 'lndr_page',
+      'post_title' => $path . ' | Lndr',
+      'post_type' => 'page',
       'post_content' => '',
       'post_status' => 'draft',
       'post_name' => $path,
@@ -271,13 +271,17 @@ class Lndr_Public {
    */
   public function lndr_page_template($single) {
     global $post;
-    /* Checks for single template by post type */
-    if ($post->post_type == "lndr_page"){
-      if(file_exists(plugin_dir_path( __FILE__ ) . 'lndr-page-template.php')) {
-        return plugin_dir_path( __FILE__ ) . 'lndr-page-template.php';
+    // Checks for single template by post type and others
+    if ($post->post_type == "page"){
+      $lndr_project_id = get_post_meta($post->ID, 'lndr_project_id', true);
+      if ($lndr_project_id != '') {
+        if(file_exists(plugin_dir_path( __FILE__ ) . 'lndr-page-template.php')) {
+          return plugin_dir_path( __FILE__ ) . 'lndr-page-template.php';
+        }
+      } else {
+        return get_template_directory() . '/page.php';
       }
     }
-    return $single;
   }
 
   /**
@@ -383,8 +387,8 @@ class Lndr_Public {
         {
           // case 2. No post was previously created, this Lndr page was changed from non-WP URL to a WP URL
           $new_post = [
-            'post_title' => $page['title'],
-            'post_type' => 'lndr_page',
+            'post_title' => $page['title'] . ' | Lndr',
+            'post_type' => 'page',
             'post_content' => '',
             'post_status' => 'publish',
             'post_name' => $path,
@@ -445,7 +449,7 @@ class Lndr_Public {
     $data = null;
     // load all lndr posts
     $args = [
-      'post_type' => 'lndr_page',
+      'post_type' => 'page',
       'post_status' => 'any',
       'meta_key' => 'lndr_project_id',
     ];
@@ -491,8 +495,9 @@ class Lndr_Public {
   public function get_post_by_path($path) {
     $data = null;
     // load all lndr posts
+    // @todo: we will need a custom query here because we will use "page" and there might be a lot of pages
     $args = [
-      'post_type' => 'lndr_page',
+      'post_type' => 'page',
       'post_status' => 'any',
     ];
     $posts = get_posts($args);
