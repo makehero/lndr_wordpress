@@ -118,13 +118,6 @@ class Lndr_Admin {
       return;
     }
 
-    // check if the user have submitted the settings
-    // wordpress will add the "settings-updated" $_GET parameter to the url
-    if ( isset( $_GET['settings-updated'] ) ) {
-      // add settings saved message with the class of "updated"
-      add_settings_error( 'lndr_messages', 'lndr_message', __( 'Settings Saved', 'lndr' ), 'updated' );
-    }
-
     // show error/update messages
     settings_errors( 'lndr_messages' );
 
