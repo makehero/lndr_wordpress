@@ -352,7 +352,7 @@ class Lndr_Public {
       // Load all of the posts which has this url path.
       $existing_post_by_alias = $this->get_post_by_path($path);
       if (isset($existing_post_by_alias)) {
-        // case 1. this post was created (reserved) for this page, however it unpublished, let's just udpate it
+        // case 1. this post was created (reserved) for this page, however it unpublished, let's just update it
         if ($existing_post_by_alias->post_status != 'publish') {
           $update_post = [
             'ID' => $existing_post_by_alias->ID,
