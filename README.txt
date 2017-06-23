@@ -11,7 +11,7 @@ This plugin is created to enable Lndr landing page builder to be on Wordpress ba
 *******************************
 1. Your Wordpress website will automatically create Lndr pages for landing pages from Lndr that are published to the Wordpress domain name. The pages might not appear instantly on Wordpress (via Wordpress Cron). If you want to see it in Wordpress right away, please download the https://wordpress.org/plugins/wp-crontrol/ plugin and go to tools >> cron events (wp-admin/tools.php?page=crontrol_admin_manage_page) and click on "run now" next to the "lndr_cron" hook
 
-2. You can find the list of Lndr landing pages published in Wordpress by visiting your Lndr pages section (wp-admin/edit.php?post_type=lndr_page)
+2. You can find the list of Lndr landing pages published in Wordpress by visiting your Lndr pages section (wp-admin/edit.php?post_type=page)
 
 *******************************
 * Development notes
@@ -22,4 +22,9 @@ https://wordpress.org/plugins/wp-crontrol/ (To see all of Wordpress Cron jobs)
 https://wordpress.org/plugins/monkeyman-rewrite-analyzer/ (To ensure web service endpoints rewrite rule is in place)
 https://wordpress.org/plugins/debug-bar/ (For general debugging)
 
+*******************************
+* Hosting notes
+*******************************
+If you do not see Lndr page published in your wordpress website. It might be because of the Wordpress Cron (WP) cron
+For WP engine, see https://wpengine.com/support/wp-cron-wordpress-scheduling/, by contacting support and enable "alternate cron" will resolve the issue
 
