@@ -9,7 +9,7 @@
  * @package    Lndr
  * @subpackage Lndr/admin
  */
-const LNDR_API_VALIDATE_TOKEN = 'http://alpha.makehero.co/v1/validate_token';
+const LNDR_API_VALIDATE_TOKEN = 'http://www.lndr.co/v1/validate_token';
 
 
 

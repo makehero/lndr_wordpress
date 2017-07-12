@@ -1,5 +1,5 @@
 <?php
-const LNDR_API_GET_PROJECT = 'http://alpha.makehero.co/v1/projects';
+const LNDR_API_GET_PROJECT = 'http://www.lndr.co/v1/projects';
 
 
 /**
