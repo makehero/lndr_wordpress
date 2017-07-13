@@ -279,7 +279,7 @@ class Lndr_Public {
           return plugin_dir_path( __FILE__ ) . 'lndr-page-template.php';
         }
       } else {
-        return get_template_directory() . '/page.php';
+        return $single;
       }
     }
   }
@@ -513,5 +513,4 @@ class Lndr_Public {
     }
     return $data;
   }
-
 }
