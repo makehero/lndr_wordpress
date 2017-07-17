@@ -1,6 +1,6 @@
 <?php
 
-const LNDR_BASE = 'http://www.lndr.co/';
+const LNDR_BASE = 'https://www.lndr.co/';
 
 /**
  * Fetch a Lndr page and render it as a post template
