@@ -81,6 +81,12 @@ class Lndr_Public {
       'methods' => 'GET',
       'callback' => array(&$this, 'create_post'),
     ));
+
+    register_rest_route('service/lndr', '/sync_content', array(
+      'methods' => 'GET',
+      'callback' => array(&$this, 'sync_content'),
+    ));
+
   }
 
   /**
@@ -196,10 +202,36 @@ class Lndr_Public {
 
   /**
    * @param WP_REST_Request $request
+   * @return string
+   */
+  public function sync_content(WP_REST_Request $request) {
+    $response = $this->service_authorization($request, FALSE);
+    // If token doesn't check out or others, we exit
+    if ($response['response']['type'] === 'error') {
+      return json_encode($response);
+    }
+
+    // Fire content syncing
+    $this->sync_posts();
+
+    $response = array(
+      'response' => array(
+        'type' => 'content_synced',
+        'message' => 'Content successfully synced',
+        'code' => '200',
+      ),
+    );
+    return json_encode($response);
+
+  }
+
+  /**
+   * @param WP_REST_Request $request
+   * @param bool $check_header
    * perform various checks on the web service.
    * @return array
    */
-  public function service_authorization(WP_REST_Request $request) {
+  public function service_authorization(WP_REST_Request $request, $check_header = TRUE) {
     // Check if the request has the appropriate API token in the header
     $headers = getallheaders();
 
@@ -242,15 +274,17 @@ class Lndr_Public {
 
     // Get the path parameter
     $path = $request->get_param('path');
-    if (!isset($path)) {
-      $response = array(
-        'response' => array(
-          'type' => 'error',
-          'message' => 'Required parameter path not given',
-          'code' => '403',
-        ),
-      );
-      return $response;
+    if ($check_header === TRUE) {
+      if (!isset($path)) {
+        $response = array(
+          'response' => array(
+            'type' => 'error',
+            'message' => 'Required parameter path not given',
+            'code' => '403',
+          ),
+        );
+        return $response;
+      }
     }
 
     // if everything checks out, we just pass the query back
