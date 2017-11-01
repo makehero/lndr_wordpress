@@ -5,7 +5,7 @@ const LNDR_BASE = 'https://www.lndr.co/';
 /**
  * Fetch a Lndr page and render it as a post template
  */
-function import_page() {
+function lndr_import_page() {
   global $post;
   // Get current post id
   $lndr_project_id = get_post_meta($post->ID, 'lndr_project_id', true);
@@ -19,7 +19,7 @@ function import_page() {
     // Because we are issuing redirect
     $http_response = $response['http_response']->get_response_object();
     $uri = $http_response->url;
-    $html = parse_page($html, $uri);
+    $html = lndr_parse_page($html, $uri);
     print $html;
   } else {
     // Render some type of Wordpress 404
@@ -34,7 +34,7 @@ function import_page() {
  * @param $html
  * @return mixed
  */
-function parse_page($html, $url) {
+function lndr_parse_page($html, $url) {
   // prepend the url of the page to all of the images
   foreach($html->find('img') as $key => $element) {
     $src= $element->src;
@@ -72,5 +72,5 @@ function parse_page($html, $url) {
   return $html;
 }
 
-add_action( 'wp', 'import_page' );
-import_page();
+add_action( 'wp', 'lndr_import_page' );
+lndr_import_page();

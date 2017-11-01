@@ -21,18 +21,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-Copyright 2017 Incc.io
 */
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
  */
-function activate_lndr() {
+function lndr_activate() {
   require_once plugin_dir_path( __FILE__ ) . 'includes/class-lndr-activator.php';
   $activator = new Lndr_Activator();
-  rewrite_api_route();
+  lndr_rewrite_api_route();
   $activator->activate();
   // lndr_custom_post_type();
 }
@@ -51,41 +49,23 @@ function lndr_custom_cron_schedule( $schedules ) {
 /**
  * rewrite our API endpoint routes to standardize them
  */
-function rewrite_api_route() {
+function lndr_rewrite_api_route() {
   // Matching anything service/ to the rest route
   add_rewrite_rule('^service/(.*)?', 'index.php?rest_route=/service/$matches[1]', 'top');
 }
 
-/**
- * Registering a new post type for Lndr pages
- */
-//function lndr_custom_post_type() {
-//  register_post_type('lndr_page',
-//    [
-//      'labels'      => [
-//        'name'          => __('Lndr pages'),
-//        'singular_name' => __('Lndr page'),
-//      ],
-//      'public'      => true,
-//      'has_archive' => false,
-//      'rewrite'     => ['slug' => '/'],
-//    ]
-//  );
-//}
-
-add_action('init', 'rewrite_api_route');
-// add_action('init', 'lndr_custom_post_type');
+add_action('init', 'lndr_rewrite_api_route');
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-plugin-name-deactivator.php
  */
-function deactivate_lndr() {
+function lndr_deactivate() {
   require_once plugin_dir_path( __FILE__ ) . 'includes/class-lndr-deactivator.php';
   Lndr_Deactivator::deactivate();
 }
-register_activation_hook( __FILE__, 'activate_lndr' );
-register_deactivation_hook( __FILE__, 'deactivate_lndr' );
+register_activation_hook( __FILE__, 'lndr_activate' );
+register_deactivation_hook( __FILE__, 'lndr_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -102,9 +82,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-lndr.php';
  *
  * @since    1.0.0
  */
-function run_lndr() {
+function lndr_run() {
   $plugin = new Lndr();
   $plugin->run();
 }
 
-run_lndr();
+lndr_run();
