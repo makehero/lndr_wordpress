@@ -50,8 +50,7 @@ If you do not see Lndr page published on your wordpress website. It might be bec
 
 == Screenshots ==
 
-1. 
-2. 
+1. https://raw.githubusercontent.com/makehero/lndr_wordpress/master/screenshot1.png
 
 == Changelog ==
 
