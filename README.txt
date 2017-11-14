@@ -20,7 +20,7 @@ Once this plugin is installed and configured correctly, you will be able to publ
 
 You will need to create a free user account on Lndr (http://www.lndr.co) in order to use the platform. Additionally, after you have successfully created an account, you can obtain an API key under your user account (https://www.lndr.co/users/edit) that will be needed as part of the WordPress plugin configuration.
 
-This WordPress plugin does not collect or track additional data or usage information. For full term of use on the Lndr product as well as privacy policy, please see http://www.lndr.co/tou.html
+This WordPress plugin does not collect or track additional data or usage information. For full term of use on the Lndr product as well as privacy policy, please see https://www.lndr.co/pages/terms
 
 == Installation ==
 
