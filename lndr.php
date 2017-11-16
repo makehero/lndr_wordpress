@@ -3,8 +3,8 @@
 Plugin Name: Lndr page builder
 Description: This plugin allows you to publish pages from Lndr to Wordpress websites directly.
 Author: Incc.io
-Version: 1.0
-Author URI: http://alpha.makehero.co
+Version: 1.1
+Author URI: http://www.lndr.co
 */
 
 /*
@@ -23,6 +23,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+global $lndr_version;
+$lndr_version = '1.1';
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-plugin-name-activator.php
@@ -32,8 +35,23 @@ function lndr_activate() {
   $activator = new Lndr_Activator();
   lndr_rewrite_api_route();
   $activator->activate();
-  // lndr_custom_post_type();
 }
+
+/**
+ * check for Lndr version and perform updates accordingly
+ */
+function lndr_update_check() {
+  global $lndr_version;
+  if (get_site_option('lndr_version') != $lndr_version) {
+    // update for specific versions
+    if ($lndr_version == '1.1') {
+      // we had added a new service path for manual sync, however, there's no need to do anything
+      // as it is automatically added
+    }
+    update_option( "lndr_version", $lndr_version );
+  }
+}
+add_action( 'plugins_loaded', 'lndr_update_check' );
 
 add_filter( 'cron_schedules', 'lndr_custom_cron_schedule' );
 

@@ -4,7 +4,7 @@ Donate link: http://www.lndr.co
 Tags: Langing page, SaaS, 3rd party integration
 Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,11 +50,12 @@ If you do not see Lndr page published on your wordpress website. It might be bec
 
 == Screenshots ==
 
-1. https://raw.githubusercontent.com/makehero/lndr_wordpress/master/screenshot1.png
+1. screenshot1.png
 
 == Changelog ==
 
 1.0 Fully working version
+1.1 Added instant publishing feature
 
 == Upgrade notice ==
 

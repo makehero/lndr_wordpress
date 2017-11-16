@@ -30,6 +30,9 @@ class Lndr_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
+
+    delete_option('lndr_version');
+
     flush_rewrite_rules();
     $timestamp = wp_next_scheduled( 'lndr_cron' );
     wp_unschedule_event( $timestamp, 'lndr_cron' );

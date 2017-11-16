@@ -22,13 +22,14 @@
  */
 class Lndr_Activator {
 	/**
-	 * Short Description. (use period)
+	 * Plugin installation
+	 * perform installation task when the plugin is activated.
 	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
+	 * @since    1.0
 	 */
 	public function activate() {
+    global $lndr_version;
+    add_option('lndr_version', $lndr_version);
     flush_rewrite_rules();
     wp_schedule_event(time(), 'two_minutes', 'lndr_cron');
 	}
