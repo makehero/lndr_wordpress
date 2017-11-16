@@ -9,23 +9,34 @@ function lndr_import_page() {
   global $post;
   // Get current post id
   $lndr_project_id = get_post_meta($post->ID, 'lndr_project_id', true);
-  $url = LNDR_BASE . 'projects/' . $lndr_project_id;
 
-  $response = wp_remote_get($url);
-  if ($response['response']['code'] == '200') {
-    require_once plugin_dir_path( __FILE__ ) . 'simple_html_dom.inc';
-    $body = wp_remote_retrieve_body($response);
-    $html = str_get_html($body);
-    // Because we are issuing redirect
-    $http_response = $response['http_response']->get_response_object();
-    $uri = $http_response->url;
-    $html = lndr_parse_page($html, $uri);
-    print $html;
-  } else {
-    // Render some type of Wordpress 404
-    global $wp_query;
-    $wp_query->set_404();
-    status_header(404);
+  // If we simply reserved the page, let's manually trigger a sync to process it
+  if ($lndr_project_id == 'reserved') {
+    // When user visits a page that has a lndr_project_id of reserved,
+    // we send them to a manual processing page, after processing, if the page is published
+    // they will be redirected back and page will be shown
+    $base_url = home_url();
+    wp_safe_redirect($base_url . '/service/lndr/lndr_sync?post_id=' . $post->ID);
+  }
+  else {
+    $url = LNDR_BASE . 'projects/' . $lndr_project_id;
+
+    $response = wp_remote_get($url);
+    if ($response['response']['code'] == '200') {
+      require_once plugin_dir_path( __FILE__ ) . 'simple_html_dom.inc';
+      $body = wp_remote_retrieve_body($response);
+      $html = str_get_html($body);
+      // Because we are issuing redirect
+      $http_response = $response['http_response']->get_response_object();
+      $uri = $http_response->url;
+      $html = lndr_parse_page($html, $uri);
+      print $html;
+    } else {
+      // Render some type of Wordpress 404
+      global $wp_query;
+      $wp_query->set_404();
+      status_header(404);
+    }
   }
 }
 

@@ -87,6 +87,11 @@ class Lndr_Public {
       'callback' => array(&$this, 'sync_content'),
     ));
 
+    // This is an internal service for us to manually sync contents
+    register_rest_route('service/lndr', 'lndr_sync', array(
+      'methods' => 'GET',
+      'callback' => array(&$this, 'lndr_sync'),
+    ));
   }
 
   /**
@@ -172,13 +177,16 @@ class Lndr_Public {
       return json_encode($response);
     }
 
-    // Create a new unpublished page
+    // Create a new published page and set special meta to "reserved"
     $new_post = [
       'post_title' => $path . ' | Lndr',
       'post_type' => 'page',
       'post_content' => '',
-      'post_status' => 'draft',
+      'post_status' => 'publish',
       'post_name' => $path,
+      'meta_input' => [
+        'lndr_project_id' => "reserved",
+      ],
     ];
     $post_saved = wp_insert_post($new_post, true);
     if (is_wp_error($post_saved)) {
@@ -222,7 +230,28 @@ class Lndr_Public {
       ),
     );
     return json_encode($response);
+  }
 
+  public function lndr_sync(WP_REST_Request $request) {
+    $base_url = home_url();
+    $this->sync_posts();
+    $page_id = $request->get_param('post_id');
+    if (isset($page_id)) {
+      // let's see if the page now has a meta data association
+      $lndr_project_id = get_post_meta($page_id, 'lndr_project_id', true);
+      // the lndr project id is no longer "reserved"
+      if (is_numeric($lndr_project_id)) {
+        wp_safe_redirect($base_url . '/' . '?p=' . $page_id);
+        exit;
+      }
+      // otherwise for safety let's redirect back to home page
+      wp_safe_redirect($base_url);
+      exit;
+    }
+    else {
+      wp_safe_redirect($base_url);
+      exit;
+    }
   }
 
   /**
@@ -386,17 +415,11 @@ class Lndr_Public {
       // Load all of the posts which has this url path.
       $existing_post_by_alias = $this->get_post_by_path($path);
       if (isset($existing_post_by_alias)) {
-        // case 1. this post was created (reserved) for this page, however it unpublished, let's just update it
-        if ($existing_post_by_alias->post_status != 'publish') {
-          $update_post = [
-            'ID' => $existing_post_by_alias->ID,
-            'post_status' => 'publish',
-          ];
-          // Update the post into the database
-          // @todo: catch error?
-          wp_update_post( $update_post );
-          // create a new postmeta
-          add_post_meta($existing_post_by_alias->ID, 'lndr_project_id', $page['id'], true);
+        // case 1. this post was created (reserved) for this page, however it is unpublished, let's just update it
+        $lndr_project_id = get_post_meta($existing_post_by_alias->ID, 'lndr_project_id', true);
+        if ($lndr_project_id == 'reserved') {
+          // update the new post meta
+          update_post_meta($existing_post_by_alias->ID, 'lndr_project_id', $page['id']);
         }
       }
       else
@@ -407,6 +430,7 @@ class Lndr_Public {
           // Making sure it is still on the same domain
           if (substr($page['publish_url'], 0, strlen($base_url)) == $base_url) {
             // $lndr_path = ltrim(substr($page['publish_url'], strlen($base_url)), '/');
+            // we simply update the post name and the path/slug will be updated
             if ($path != $existing_post_by_project_id->post_name) {
               $update_post = [
                 'ID' => $existing_post_by_project_id->ID,
@@ -502,10 +526,14 @@ class Lndr_Public {
     else
     {
       // For multiple post, we attach the post meta
-      // @todo: this is not most efficient right now
+      // @todo: this is not the most efficient method right now
       foreach ($posts as $post) {
         $lndr_project_id = get_post_meta($post->ID, 'lndr_project_id', true);
-        $data[$post->ID] = $lndr_project_id;
+        // We exclude posts that have a lndr_project_id = reserved
+        // so they don't get deleted through the sync
+        if ($lndr_project_id != 'reserved') {
+          $data[$post->ID] = $lndr_project_id;
+        }
       }
       return $data;
     }
