@@ -486,12 +486,16 @@ class Lndr_Public {
       return;
     }
 
+    $frontpage_settings = get_option('show_on_front', 'posts');
+
     foreach ($existing_posts as $post_id => $project_id) {
       // Case 5. Remove any local path not present in the web service
       if (!array_key_exists($project_id, $_projects)) {
         // delete the post permenantly
         // @todo: future there can be an archived stage = trash or archive
         wp_delete_post($post_id, true);
+        // Check and reset frontpage settings as a fallback
+        $this->reset_front_page($post_id, $frontpage_settings);
       }
       else
       {
@@ -500,6 +504,7 @@ class Lndr_Public {
          // delete the post permenantly
          // @todo: future there can be an archived stage = trash or archive
          wp_delete_post($post_id, true);
+         $this->reset_front_page($post_id, $frontpage_settings);
        }
       }
     }
@@ -557,6 +562,21 @@ class Lndr_Public {
        update_option('show_on_front', 'page');
        // Setting the front-page ID to our page
        update_option('page_on_front', $post_id);
+     }
+   }
+
+   /**
+    * Resetting the frontpage to showing a list of posts
+    * @param $post_id | The post id of the page
+    * @param $front_settings | get_option('show_on_front', 'posts');
+    */
+   function reset_front_page($post_id, $front_settings = 'posts') {
+     if ($front_settings == 'page') {
+       $frontpage_id = get_option('page_on_front', 0);
+       if ($frontpage_id == $post_id) {
+         update_option('show_on_front', 'posts');
+         update_option('page_on_front', 0);
+       }
      }
    }
 
