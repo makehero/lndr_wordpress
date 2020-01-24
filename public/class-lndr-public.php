@@ -1,5 +1,6 @@
 <?php
 const LNDR_API_GET_PROJECT = 'https://www.lndr.co/v1/projects';
+const LNDR_WP_HOMEPAGE_PATH = 'lndr-frontpage';
 
 
 /**
@@ -420,6 +421,8 @@ class Lndr_Public {
         if ($lndr_project_id == 'reserved') {
           // update the new post meta
           update_post_meta($existing_post_by_alias->ID, 'lndr_project_id', $page['id']);
+          // set the page to the frontpage if necessary
+          $this->set_front_page($existing_post_by_alias->ID, $path);
         }
       }
       else
@@ -438,6 +441,7 @@ class Lndr_Public {
               ];
               // @todo: catch error?
               wp_update_post( $update_post );
+              $this->set_front_page($existing_post_by_project_id->ID, $path);
             }
           }
         }
@@ -454,7 +458,10 @@ class Lndr_Public {
               'lndr_project_id' => $page['id'],
             ],
           ];
-          wp_insert_post($new_post);
+          $post_id = wp_insert_post($new_post);
+          if ((bool)$post_id) {
+            $this->set_front_page($post_id, $path);
+          }
         }
       }
     }
@@ -479,12 +486,16 @@ class Lndr_Public {
       return;
     }
 
+    $frontpage_settings = get_option('show_on_front', 'posts');
+
     foreach ($existing_posts as $post_id => $project_id) {
       // Case 5. Remove any local path not present in the web service
       if (!array_key_exists($project_id, $_projects)) {
         // delete the post permenantly
         // @todo: future there can be an archived stage = trash or archive
         wp_delete_post($post_id, true);
+        // Check and reset frontpage settings as a fallback
+        $this->reset_front_page($post_id, $frontpage_settings);
       }
       else
       {
@@ -493,6 +504,7 @@ class Lndr_Public {
          // delete the post permenantly
          // @todo: future there can be an archived stage = trash or archive
          wp_delete_post($post_id, true);
+         $this->reset_front_page($post_id, $frontpage_settings);
        }
       }
     }
@@ -538,6 +550,35 @@ class Lndr_Public {
       return $data;
     }
   }
+
+  /**
+   * Set the special page deployed to wordpress as the front_page
+   * @param $post_id | The ID of the page/post
+   * @param $path | The path of the page/post which should be the name of the page
+   */
+   function set_front_page($post_id, $path) {
+     if ($path == LNDR_WP_HOMEPAGE_PATH) {
+       // Update this just in case
+       update_option('show_on_front', 'page');
+       // Setting the front-page ID to our page
+       update_option('page_on_front', $post_id);
+     }
+   }
+
+   /**
+    * Resetting the frontpage to showing a list of posts
+    * @param $post_id | The post id of the page
+    * @param $front_settings | get_option('show_on_front', 'posts');
+    */
+   function reset_front_page($post_id, $front_settings = 'posts') {
+     if ($front_settings == 'page') {
+       $frontpage_id = get_option('page_on_front', 0);
+       if ($frontpage_id == $post_id) {
+         update_option('show_on_front', 'posts');
+         update_option('page_on_front', 0);
+       }
+     }
+   }
 
   /**
    * Register our query parameter for WP to use
