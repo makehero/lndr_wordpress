@@ -4,7 +4,7 @@ Donate link: http://www.lndr.co
 Tags: Langing page, SaaS, 3rd party integration
 Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ https://wordpress.org/plugins/wp-crontrol/ (To see all of WordPress Cron jobs)
 https://wordpress.org/plugins/monkeyman-rewrite-analyzer/ (To ensure web service endpoints rewrite rule is in place)
 https://wordpress.org/plugins/debug-bar/ (For general debugging)
 
-= I have everything setup correctly, however my page is not being imported into WordPress = 
+= I have everything setup correctly, however my page is not being imported into WordPress =
 
 If you do not see Lndr page published on your wordpress website. It might be because of the WordPress Cron (WP) cron and due to low traffic volume. For example, for WordPress sites hosted on WP engine, see https://wpengine.com/support/wp-cron-wordpress-scheduling/, by contacting support and enable "alternate cron" will resolve the issue
 
@@ -56,6 +56,7 @@ If you do not see Lndr page published on your wordpress website. It might be bec
 
 1.0 Fully working version
 1.1 Added instant publishing feature
+1.2 Added publish add root domain (using keyword lndr-frontpage)
 
 == Upgrade notice ==
 

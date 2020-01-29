@@ -69,7 +69,7 @@ class Lndr {
 	public function __construct() {
 
 		$this->plugin_name = 'Lndr';
-		$this->version = '1.1';
+		$this->version = '1.2';
 
 		$this->load_dependencies();
 		// $this->set_locale();
